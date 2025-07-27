@@ -1,0 +1,446 @@
+{% extends "base_new.html" %}
+
+{% block title %}Admin Dashboard - ELMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stats-card .icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .stats-card .number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-card .label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .users-icon { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .employees-icon { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    .managers-icon { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+    .requests-icon { background: linear-gradient(135deg, #fa709a, #fee140); }
+    .pending-icon { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .approved-icon { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    .rejected-icon { background: linear-gradient(135deg, #fd1d1d, #fcb045); }
+    .approval-icon { background: linear-gradient(135deg, #11998e, #38ef7d); }
+    
+    .section-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+    
+    .section-header {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .section-header h5 {
+        margin: 0;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    
+    .section-body {
+        padding: 1.5rem;
+    }
+    
+    .export-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+    
+    .export-form {
+        background: rgba(255,255,255,0.1);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .export-form input, .export-form select {
+        background: rgba(255,255,255,0.9);
+        border: none;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    
+    .table-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .table th {
+        background: #f8f9fa;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .activity-item {
+        padding: 1rem;
+        border-left: 4px solid #007bff;
+        margin-bottom: 1rem;
+        background: #f8f9fa;
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .team-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .quick-action-btn {
+        background: white;
+        border: 2px solid #667eea;
+        color: #667eea;
+        padding: 1rem;
+        border-radius: 10px;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+    
+    .quick-action-btn:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <h1><i class="fas fa-cog"></i> Admin Dashboard</h1>
+        <p class="lead">System Overview and Management</p>
+        <p><strong>{{ current_user.username }}</strong> | {{ current_user.email }}</p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <a href="{{ url_for('admin_users') }}" class="quick-action-btn">
+            <i class="fas fa-users"></i><br>Manage Users
+        </a>
+        <a href="{{ url_for('manager_dashboard') }}" class="quick-action-btn">
+            <i class="fas fa-clipboard-list"></i><br>View All Requests
+        </a>
+        <a href="{{ url_for('audit_logs') }}" class="quick-action-btn">
+            <i class="fas fa-history"></i><br>Audit Logs
+        </a>
+        <a href="{{ url_for('export_csv') }}" class="quick-action-btn">
+            <i class="fas fa-download"></i><br>Export Data
+        </a>
+    </div>
+
+    <!-- Statistics Grid -->
+    <div class="stats-grid">
+        <!-- User Statistics -->
+        <div class="stats-card">
+            <div class="icon users-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="number">{{ total_users }}</div>
+            <div class="label">Total Users</div>
+        </div>
+        
+        <div class="stats-card">
+            <div class="icon employees-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="number">{{ total_employees }}</div>
+            <div class="label">Employees</div>
+        </div>
+        
+        <div class="stats-card">
+            <div class="icon managers-icon">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="number">{{ total_managers }}</div>
+            <div class="label">Managers</div>
+        </div>
+        
+        <!-- Request Statistics -->
+        <div class="stats-card">
+            <div class="icon requests-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="number">{{ total_requests }}</div>
+            <div class="label">Total Requests</div>
+        </div>
+        
+        <div class="stats-card">
+            <div class="icon pending-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="number">{{ pending_requests }}</div>
+            <div class="label">Pending</div>
+        </div>
+        
+        <div class="stats-card">
+            <div class="icon approved-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="number">{{ approved_requests }}</div>
+            <div class="label">Approved</div>
+        </div>
+        
+        <div class="stats-card">
+            <div class="icon rejected-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="number">{{ rejected_requests }}</div>
+            <div class="label">Rejected</div>
+        </div>
+        
+        <div class="stats-card">
+            <div class="icon approval-icon">
+                <i class="fas fa-percent"></i>
+            </div>
+            <div class="number">{{ approval_rate }}%</div>
+            <div class="label">Approval Rate</div>
+        </div>
+    </div>
+
+    <!-- Export Section -->
+    <div class="export-section">
+        <h4><i class="fas fa-download"></i> Export Leave Data</h4>
+        <p>Download leave request data in CSV format with optional filters</p>
+        
+        <div class="export-form">
+            <form action="{{ url_for('export_csv') }}" method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label for="month" class="form-label">Month Filter</label>
+                    <input type="month" name="month" id="month" class="form-control" 
+                           placeholder="Select month (optional)">
+                </div>
+                <div class="col-md-4">
+                    <label for="team" class="form-label">Team Filter</label>
+                    <select name="team" id="team" class="form-control">
+                        <option value="">All Teams</option>
+                        {% for team_stat in team_stats %}
+                        <option value="{{ team_stat.name }}">{{ team_stat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-light w-100">
+                        <i class="fas fa-file-csv"></i> Export to CSV
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Team Statistics -->
+        <div class="col-lg-6">
+            <div class="section-card">
+                <div class="section-header">
+                    <h5><i class="fas fa-chart-bar"></i> Team Statistics</h5>
+                </div>
+                <div class="section-body">
+                    {% if team_stats %}
+                        {% for team in team_stats %}
+                        <div class="team-stat">
+                            <span><i class="fas fa-users"></i> {{ team.name }}</span>
+                            <span class="badge bg-primary">{{ team.requests }} requests</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center">
+                            <i class="fas fa-info-circle"></i> No team data available
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="col-lg-6">
+            <div class="section-card">
+                <div class="section-header">
+                    <h5><i class="fas fa-clock"></i> Recent Activity</h5>
+                </div>
+                <div class="section-body">
+                    {% if recent_logs %}
+                        {% for log in recent_logs %}
+                        <div class="activity-item">
+                            <strong>{{ log.user.username }}</strong>
+                            <br>{{ log.action }}
+                            <br><small class="text-muted">
+                                <i class="fas fa-clock"></i> {{ log.timestamp.strftime('%Y-%m-%d %H:%M') }} 
+                                | <i class="fas fa-map-marker-alt"></i> {{ log.ip_address }}
+                            </small>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center">
+                            <i class="fas fa-info-circle"></i> No recent activity
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Leave Requests -->
+    <div class="section-card">
+        <div class="section-header">
+            <h5><i class="fas fa-calendar-check"></i> Recent Leave Requests</h5>
+        </div>
+        <div class="section-body">
+            {% if recent_requests %}
+                <div class="table-container">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Employee</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Days</th>
+                                <th>Status</th>
+                                <th>Applied</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for request in recent_requests %}
+                            <tr>
+                                <td><strong>#{{ request.id }}</strong></td>
+                                <td>
+                                    <i class="fas fa-user"></i> {{ request.employee.username }}
+                                    {% if request.employee.team %}
+                                    <br><small class="text-muted">{{ request.employee.team }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ request.start_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ request.end_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <span class="badge bg-info">{{ request.days_count }}</span>
+                                </td>
+                                <td>
+                                    {% if request.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif request.status == 'approved' %}
+                                        <span class="badge bg-success">Approved</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ request.applied_on.strftime('%m/%d') }}</td>
+                                <td>
+                                    {% if request.status == 'pending' %}
+                                        <a href="{{ url_for('decide_leave', leave_id=request.id) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-gavel"></i> Decide
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">
+                                            <i class="fas fa-check"></i> Decided
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted text-center">
+                    <i class="fas fa-calendar-times"></i> No leave requests found
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Real-time dashboard updates
+function updateAdminStats() {
+    // You can implement AJAX calls here to update statistics in real-time
+    console.log('Admin dashboard loaded');
+}
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    updateAdminStats();
+    
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

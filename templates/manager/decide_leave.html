@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Review Leave Request - ELMS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-check2-square"></i> Review Leave Request #{{ leave_request.id }}</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Employee Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-person-circle"></i> Employee Information</h6>
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <th width="30%">Name:</th>
+                                    <td>{{ leave_request.employee.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>{{ leave_request.employee.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Team:</th>
+                                    <td>{{ leave_request.employee.team or 'No Team' }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-calendar-event"></i> Leave Details</h6>
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <th width="30%">Start Date:</th>
+                                    <td>{{ leave_request.start_date.strftime('%Y-%m-%d') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>End Date:</th>
+                                    <td>{{ leave_request.end_date.strftime('%Y-%m-%d') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Duration:</th>
+                                    <td><span class="badge bg-info">{{ leave_request.days_count }} days</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Applied On:</th>
+                                    <td>{{ leave_request.applied_on.strftime('%Y-%m-%d %H:%M') }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Leave Reason -->
+                    <div class="mb-4">
+                        <h6><i class="bi bi-chat-left-text"></i> Reason for Leave</h6>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                {{ leave_request.reason }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decision Form -->
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.decision.label(class="form-label") }}
+                                    {{ form.decision(class="form-select" + (" is-invalid" if form.decision.errors else "")) }}
+                                    {% if form.decision.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.decision.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.decision_reason.label(class="form-label") }}
+                            {{ form.decision_reason(class="form-control" + (" is-invalid" if form.decision_reason.errors else ""), rows="3", placeholder="Optional comment about your decision...") }}
+                            {% if form.decision_reason.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.decision_reason.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">This comment will be visible to the employee</div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('manager_dashboard') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Dashboard
+                            </a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Update submit button based on decision
+document.addEventListener('DOMContentLoaded', function() {
+    const decisionSelect = document.getElementById('decision');
+    const submitBtn = document.querySelector('input[type="submit"]');
+    
+    function updateSubmitButton() {
+        const decision = decisionSelect.value;
+        if (decision === 'approved') {
+            submitBtn.className = 'btn btn-success';
+            submitBtn.value = 'Approve Request';
+        } else if (decision === 'rejected') {
+            submitBtn.className = 'btn btn-danger';
+            submitBtn.value = 'Reject Request';
+        } else {
+            submitBtn.className = 'btn btn-primary';
+            submitBtn.value = 'Submit Decision';
+        }
+    }
+    
+    decisionSelect.addEventListener('change', updateSubmitButton);
+    updateSubmitButton(); // Initial call
+});
+</script>
+{% endblock %}
