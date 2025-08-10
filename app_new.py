@@ -11,6 +11,7 @@ import os
 from functools import wraps
 from io import BytesIO
 import secrets
+import re
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -25,6 +26,22 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message = 'Please log in to access this page.'
 login_manager.login_message_category = 'info'
+
+# Custom Jinja2 filters
+@app.template_filter('regex_match')
+def regex_match(text, pattern):
+    """Check if text matches the regex pattern"""
+    if text is None:
+        return False
+    return bool(re.search(pattern, str(text), re.IGNORECASE))
+
+# Register the filter as a test as well
+@app.template_test('match')
+def regex_test(text, pattern):
+    """Jinja2 test for regex matching"""
+    if text is None:
+        return False
+    return bool(re.search(pattern, str(text), re.IGNORECASE))
 
 # Database Models
 class User(UserMixin, db.Model):

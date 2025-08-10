@@ -193,7 +193,7 @@
                                     {% for request in recent_requests %}
                                     <tr>
                                         <td><strong>#{{ request.id }}</strong></td>
-                                        <td>{{ request.employee.name }}</td>
+                                        <td>{{ request.employee.username }}</td>
                                         <td>{{ request.start_date.strftime('%m/%d') }} - {{ request.end_date.strftime('%m/%d') }}</td>
                                         <td>
                                             {% if request.status == 'pending' %}

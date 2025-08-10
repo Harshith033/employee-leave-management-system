@@ -3,164 +3,225 @@
 {% block title %}Login - Employee Leave Management System{% endblock %}
 
 {% block extra_css %}
-<style>
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .login-container {
-        max-width: 400px;
-        margin: 4rem auto;
-        padding: 2rem;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .login-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        background: linear-gradient(90deg, #007bff, #6610f2, #6f42c1, #e83e8c, #fd7e14);
-    }
-    
-    .login-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    
-    .login-header h2 {
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-    }
-    
-    .login-header p {
-        color: #6c757d;
-        margin-bottom: 0;
-    }
-    
-    .form-floating {
-        margin-bottom: 1.5rem;
-    }
-    
-    .form-floating input {
-        border: 2px solid #e9ecef;
-        border-radius: 10px;
-        transition: border-color 0.3s ease;
-    }
-    
-    .form-floating input:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
-    }
-    
-    .btn-login {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        border: none;
-        border-radius: 10px;
-        padding: 0.75rem 2rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        transition: transform 0.2s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .btn-login::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.3);
-        transition: width 0.6s, height 0.6s;
-        transform: translate(-50%, -50%);
-    }
-    
-    .btn-login:hover::before {
-        width: 300px;
-        height: 300px;
-    }
-    
-    .btn-login:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0,123,255,0.3);
-    }
-    
-    .register-link {
-        text-align: center;
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid #e9ecef;
-    }
-    
-    .register-link a {
-        color: #007bff;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.3s ease;
-    }
-    
-    .register-link a:hover {
-        color: #0056b3;
-    }
-    
-    .feature-highlight {
-        background: #f8f9fa;
-        border-left: 4px solid #007bff;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .feature-highlight h6 {
-        color: #007bff;
-        margin-bottom: 0.5rem;
-    }
-    
-    .feature-highlight ul {
-        margin-bottom: 0;
-        padding-left: 1.2rem;
-    }
-    
-    .feature-highlight li {
-        color: #6c757d;
-        font-size: 0.9rem;
-        margin-bottom: 0.3rem;
-    }
-    
-    .invalid-feedback {
-        font-size: 0.875rem;
-    }
-    
-    /* Animation for form load */
-    .login-container {
-        animation: slideInUp 0.6s ease-out;
-    }
-    
-    @keyframes slideInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        .login-container {
+            max-width: 700px;
+            width: 150%;
+            margin: 1rem auto 2rem auto;
+            padding: 5.7rem 5.2rem 5.2rem 5.2rem;
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.13);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.6s ease-out;
         }
-    }
-</style>
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #007bff, #6610f2, #6f42c1, #e83e8c, #fd7e14);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.7rem;
+        }
+
+        .login-header h2 {
+            color: #2c3e50;
+            margin-bottom: 0.7rem;
+            font-weight: 700;
+            font-size: 2.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .login-header p {
+            color: #6c757d;
+            margin-bottom: 0;
+            font-size: 1.08rem;
+        }
+
+        .form-floating {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-floating input {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            transition: border-color 0.3s ease;
+            font-size: 1.08rem;
+            padding: 1.1rem 1.1rem 1.1rem 1.1rem;
+            background: #f9fafd;
+        }
+
+        .form-floating input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 12px;
+            padding: 0.95rem 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            margin-bottom: 0.7rem;
+            font-size: 1.08rem;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transition: width 0.6s, height 0.6s;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn-login:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+        }
+
+        .btn-register {
+            display: block;
+            width: 100%;
+            margin: 0.7rem 0 0 0;
+            padding: 0.95rem 2rem;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 16px rgba(67,233,123,0.15);
+            font-size: 1.08rem;
+        }
+        .btn-register:hover {
+            background: linear-gradient(135deg, #38f9d7 0%, #43e97b 100%);
+            color: #222;
+            transform: translateY(-2px);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #0056b3;
+        }
+
+        .feature-highlight {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.3rem 1.3rem 1.3rem 1.5rem;
+            margin-bottom: 2.2rem;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .feature-highlight h6 {
+            color: #007bff;
+            margin-bottom: 0.7rem;
+            font-size: 1.1rem;
+        }
+
+        .feature-highlight ul {
+            margin-bottom: 0;
+            padding-left: 1.2rem;
+        }
+
+        .feature-highlight li {
+            color: #6c757d;
+            font-size: 1.01rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .invalid-feedback {
+            font-size: 0.875rem;
+        }
+
+        /* Animation for form load */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .login-container {
+                max-width: 98vw;
+                padding: 1.1rem 0.3rem 1.3rem 0.3rem;
+                margin: 1.2rem auto;
+                border-radius: 10px;
+            }
+            .feature-highlight {
+                padding: 0.7rem 0.7rem 0.7rem 0.9rem;
+                font-size: 0.99rem;
+                margin-bottom: 1.2rem;
+            }
+            .btn-login, .btn-register {
+                font-size: 1rem;
+                padding: 0.7rem 1rem;
+            }
+            .form-floating input {
+                padding: 0.9rem 0.7rem 0.9rem 0.7rem;
+            }
+        }
+        @media (max-width: 400px) {
+            .login-header h2 {
+                font-size: 1.1rem;
+            }
+            .login-header p {
+                font-size: 0.88rem;
+            }
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -180,9 +241,9 @@
             </ul>
         </div>
 
+
         <form method="POST" id="loginForm">
             {{ form.hidden_tag() }}
-            
             <div class="form-floating">
                 {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="Username", id="floatingUsername") }}
                 {{ form.username.label(for="floatingUsername") }}
@@ -194,7 +255,6 @@
                     </div>
                 {% endif %}
             </div>
-            
             <div class="form-floating">
                 {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Password", id="floatingPassword") }}
                 {{ form.password.label(for="floatingPassword") }}
@@ -206,13 +266,10 @@
                     </div>
                 {% endif %}
             </div>
-            
             <div class="d-grid">
                 {{ form.submit(class="btn btn-primary btn-login") }}
             </div>
-        </form>
-
-        <div class="register-link">
+            <div class="register-link">
             <p class="mb-0">
                 Don't have an account? 
                 <a href="{{ url_for('register') }}">
@@ -220,6 +277,9 @@
                 </a>
             </p>
         </div>
+        </form>
+     
+        
     </div>
 </div>
 {% endblock %}

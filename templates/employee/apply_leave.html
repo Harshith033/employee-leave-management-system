@@ -18,7 +18,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     {{ form.start_date.label(class="form-label") }}
-                                    {{ form.start_date(class="form-control datepicker" + (" is-invalid" if form.start_date.errors else ""), type="date") }}
+                                    {{ form.start_date(class="form-control" + (" is-invalid" if form.start_date.errors else ""), type="date") }}
                                     {% if form.start_date.errors %}
                                         <div class="invalid-feedback">
                                             {% for error in form.start_date.errors %}
@@ -32,7 +32,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     {{ form.end_date.label(class="form-label") }}
-                                    {{ form.end_date(class="form-control datepicker" + (" is-invalid" if form.end_date.errors else ""), type="date") }}
+                                    {{ form.end_date(class="form-control" + (" is-invalid" if form.end_date.errors else ""), type="date") }}
                                     {% if form.end_date.errors %}
                                         <div class="invalid-feedback">
                                             {% for error in form.end_date.errors %}
