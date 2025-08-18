@@ -216,7 +216,7 @@ def role_required(role):
         def decorated_function(*args, **kwargs):
             if not current_user.is_authenticated or current_user.role != role:
                 flash('Access denied. Insufficient permissions.', 'danger')
-                return redirect(url_for('auth.login'))
+                return redirect(url_for('login'))
             return f(*args, **kwargs)
         return decorated_function
     return decorator
@@ -402,13 +402,13 @@ def manager_dashboard():
     # Get team leave requests
     if current_user.role == 'admin':
         # Admin can see all requests - specify the join condition explicitly
-        leave_requests = LeaveRequest.query.join(User, LeaveRequest.user_id == User.id).order_by(LeaveRequest.applied_on.desc()).all()
+        leave_requests = LeaveRequest.query.join(User, LeaveRequest.user_id == User.id).order_by(LeaveRequest.applied_on.asc()).all()
     else:
         # Manager sees requests from their team - specify the join condition explicitly
         leave_requests = LeaveRequest.query.join(User, LeaveRequest.user_id == User.id).filter(
             User.team == current_user.team,
             User.role == 'employee'
-        ).order_by(LeaveRequest.applied_on.desc()).all()
+        ).order_by(LeaveRequest.applied_on.asc()).all()
     
     # Apply filters
     status_filter = request.args.get('status', '')
@@ -436,7 +436,7 @@ def manager_dashboard():
     else:
         team_employees = User.query.filter_by(team=current_user.team, role='employee').all()
     
-    return render_template('manager/dashboard.html', 
+    return render_template('manager/dashboard_new.html', 
                          leave_requests=leave_requests,
                          team_employees=team_employees,
                          filters={
@@ -526,7 +526,7 @@ def admin_dashboard():
 @login_required
 @role_required('admin')
 def admin_users():
-    users = User.query.order_by(User.created_at.desc()).all()
+    users = User.query.order_by(User.created_at.asc()).all()
     return render_template('admin/users.html', users=users)
 
 @app.route('/admin/add-user', methods=['GET', 'POST'])
@@ -574,10 +574,26 @@ def delete_user(user_id):
 @role_required('admin')
 def audit_logs():
     page = request.args.get('page', 1, type=int)
-    logs = AuditLog.query.order_by(AuditLog.timestamp.desc()).paginate(
-        page=page, per_page=50, error_out=False
+    logs = AuditLog.query.order_by(AuditLog.timestamp.asc()).paginate(
+        page=page, per_page=25, error_out=False
     )
-    return render_template('admin/audit_logs.html', logs=logs)
+
+    # Calculate statistics for all logs, not just the current page
+    total_logs = AuditLog.query.count()
+    login_activities = AuditLog.query.filter(AuditLog.action.like('%logged in%')).count()
+    leave_activities = AuditLog.query.filter(AuditLog.action.like('%leave%')).count()
+    user_activities = AuditLog.query.filter(AuditLog.action.like('%user%')).count()
+    export_activities = AuditLog.query.filter(AuditLog.action.like('%Export%')).count()
+
+    stats = {
+        'total': total_logs,
+        'login': login_activities,
+        'leave': leave_activities,
+        'user': user_activities,
+        'export': export_activities
+    }
+
+    return render_template('admin/audit_logs_new.html', logs=logs, stats=stats)
 
 # API Routes for real-time updates
 @app.route('/api/dashboard-stats')
