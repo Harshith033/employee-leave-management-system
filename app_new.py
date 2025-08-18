@@ -151,9 +151,31 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
+class AdminAddUserForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    role = SelectField('Role', choices=[
+        ('employee', 'Employee'),
+        ('manager', 'Manager'),
+        ('admin', 'Admin')
+    ], validators=[DataRequired()])
+    team = StringField('Team', validators=[Length(max=50)])
+    submit = SubmitField('Add User')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('Username already exists. Choose a different one.')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('Email already registered. Choose a different one.')
+
 class LeaveRequestForm(FlaskForm):
-    start_date = DateField('Start Date', validators=[DataRequired()])
-    end_date = DateField('End Date', validators=[DataRequired()])
+    start_date = DateField('Start Date', validators=[DataRequired()], render_kw={"placeholder": "DD-MM-YYYY"})
+    end_date = DateField('End Date', validators=[DataRequired()], render_kw={"placeholder": "DD-MM-YYYY"})
     reason = TextAreaField('Reason', validators=[DataRequired(), Length(min=10, max=500)])
     submit = SubmitField('Submit Request')
     
@@ -511,7 +533,7 @@ def admin_users():
 @login_required
 @role_required('admin')
 def add_user():
-    form = RegistrationForm()
+    form = AdminAddUserForm()
     if form.validate_on_submit():
         user = User(
             username=form.username.data,
