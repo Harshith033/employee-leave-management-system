@@ -1,0 +1,299 @@
+{% extends "base_new.html" %}
+
+{% block title %}Register - Employee Leave Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    
+    .register-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .register-header h2 {
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    
+    .register-header p {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: border-color 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    }
+    
+    .btn-register {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: transform 0.2s ease;
+    }
+    
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+    }
+    
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .role-info {
+        background: #f8f9fa;
+        border-left: 4px solid #007bff;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    .role-info h6 {
+        color: #007bff;
+        margin-bottom: 0.5rem;
+    }
+    
+    .role-info ul {
+        margin-bottom: 0;
+        padding-left: 1.2rem;
+    }
+    
+    .role-info li {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .password-strength {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-top: 0.3rem;
+    }
+    
+    .invalid-feedback {
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="register-container">
+        <div class="register-header">
+            <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+            <p>Join the Employee Leave Management System</p>
+        </div>
+
+        <div class="role-info">
+            <h6><i class="fas fa-info-circle"></i> Role Information</h6>
+            <ul>
+                <li><strong>Employee:</strong> Apply for leaves, view leave history and balance</li>
+                <li><strong>Manager:</strong> All employee features + approve/reject team leave requests</li>
+                <li><strong>Admin:</strong> All manager features + user management and system reports</li>
+            </ul>
+        </div>
+
+        <form method="POST" id="registrationForm">
+            {{ form.hidden_tag() }}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="Enter username") }}
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="Enter email address") }}
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Enter password") }}
+                        <div class="password-strength">
+                            <i class="fas fa-lock"></i> Minimum 6 characters required
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.confirm_password.label(class="form-label") }}
+                        {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else ""), placeholder="Confirm password") }}
+                        {% if form.confirm_password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.confirm_password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.role.label(class="form-label") }}
+                        {{ form.role(class="form-control" + (" is-invalid" if form.role.errors else "")) }}
+                        {% if form.role.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.role.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.team.label(class="form-label") }}
+                        {{ form.team(class="form-control" + (" is-invalid" if form.team.errors else ""), placeholder="Enter team name (optional)") }}
+                        {% if form.team.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.team.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary btn-register w-100") }}
+            </div>
+        </form>
+
+        <div class="login-link">
+            <p class="mb-0">
+                Already have an account? 
+                <a href="{{ url_for('login') }}" class="text-decoration-none">
+                    <i class="fas fa-sign-in-alt"></i> Login here
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Real-time password confirmation validation
+    const passwordField = document.getElementById('confirm_password');
+    const originalPassword = document.getElementById('password');
+    
+    function validatePasswordMatch() {
+        if (passwordField.value && originalPassword.value) {
+            if (passwordField.value === originalPassword.value) {
+                passwordField.classList.remove('is-invalid');
+                passwordField.classList.add('is-valid');
+            } else {
+                passwordField.classList.remove('is-valid');
+                passwordField.classList.add('is-invalid');
+            }
+        }
+    }
+    
+    if (passwordField && originalPassword) {
+        passwordField.addEventListener('input', validatePasswordMatch);
+        originalPassword.addEventListener('input', validatePasswordMatch);
+    }
+    
+    // Username validation
+    const usernameField = document.getElementById('username');
+    if (usernameField) {
+        usernameField.addEventListener('input', function() {
+            const username = this.value;
+            if (username.length >= 4) {
+                // Check if username is available (you can implement AJAX call here)
+                this.classList.remove('is-invalid');
+            }
+        });
+    }
+    
+    // Email validation
+    const emailField = document.getElementById('email');
+    if (emailField) {
+        emailField.addEventListener('input', function() {
+            const email = this.value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailPattern.test(email)) {
+                this.classList.remove('is-invalid');
+            }
+        });
+    }
+    
+    // Form submission with loading state
+    const form = document.getElementById('registrationForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    form.addEventListener('submit', function() {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Apply for Leave - ELMS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-calendar-plus"></i> Apply for Leave</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.start_date.label(class="form-label") }}
+                                    {{ form.start_date(class="form-control" + (" is-invalid" if form.start_date.errors else ""), type="date") }}
+                                    {% if form.start_date.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.start_date.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.end_date.label(class="form-label") }}
+                                    {{ form.end_date(class="form-control" + (" is-invalid" if form.end_date.errors else ""), type="date") }}
+                                    {% if form.end_date.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.end_date.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.reason.label(class="form-label") }}
+                            {{ form.reason(class="form-control" + (" is-invalid" if form.reason.errors else ""), rows="4", placeholder="Please provide a detailed reason for your leave request...") }}
+                            {% if form.reason.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.reason.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Minimum 10 characters required</div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('employee_dashboard') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Dashboard
+                            </a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Calculate days when dates change
+document.addEventListener('DOMContentLoaded', function() {
+    const startDate = document.getElementById('start_date');
+    const endDate = document.getElementById('end_date');
+    
+    function calculateDays() {
+        if (startDate.value && endDate.value) {
+            const start = new Date(startDate.value);
+            const end = new Date(endDate.value);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            
+            if (diffDays > 0) {
+                document.getElementById('days-info').innerHTML = 
+                    `<small class="text-info"><i class="bi bi-info-circle"></i> Total days: ${diffDays}</small>`;
+            }
+        }
+    }
+    
+    startDate.addEventListener('change', calculateDays);
+    endDate.addEventListener('change', calculateDays);
+    
+    // Add days info div after end date
+    const daysInfo = document.createElement('div');
+    daysInfo.id = 'days-info';
+    daysInfo.className = 'mt-1';
+    endDate.parentNode.appendChild(daysInfo);
+});
+</script>
+{% endblock %}

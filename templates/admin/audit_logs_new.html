@@ -1,0 +1,158 @@
+{% extends "base_new.html" %}
+
+{% block title %}Audit Logs - ELMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .card-header {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+    .table th {
+        font-weight: 600;
+        color: #2c3e50;
+        background-color: #f8f9fa;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f1f3f5;
+    }
+    .stats-card {
+        border-radius: 10px;
+        color: white;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+    .stats-card h4 {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .stats-card p {
+        margin-bottom: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-history"></i> Audit Logs</h1>
+    </div>
+
+    <!-- Log Statistics -->
+    <div class="row mb-4">
+        <div class="col-lg col-md-6">
+            <div class="stats-card bg-info">
+                <h4>{{ stats.login }}</h4>
+                <p><i class="fas fa-sign-in-alt"></i> Login Activities</p>
+            </div>
+        </div>
+        <div class="col-lg col-md-6">
+            <div class="stats-card bg-warning text-dark">
+                <h4>{{ stats.leave }}</h4>
+                <p><i class="fas fa-calendar-alt"></i> Leave Activities</p>
+            </div>
+        </div>
+        <div class="col-lg col-md-6">
+            <div class="stats-card bg-success">
+                <h4>{{ stats.user }}</h4>
+                <p><i class="fas fa-users-cog"></i> User Management</p>
+            </div>
+        </div>
+        <div class="col-lg col-md-6">
+            <div class="stats-card bg-primary">
+                <h4>{{ stats.export }}</h4>
+                <p><i class="fas fa-file-export"></i> Export Activities</p>
+            </div>
+        </div>
+        <div class="col-lg col-md-6">
+            <div class="stats-card bg-secondary">
+                <h4>{{ stats.total }}</h4>
+                <p><i class="fas fa-list-ol"></i> Total Logs</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">System Activity Log</h5>
+            <small class="text-muted">
+                Showing page {{ logs.page }} of {{ logs.pages }}
+            </small>
+        </div>
+        <div class="card-body p-0">
+            {% if logs.items %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Log ID</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Action</th>
+                            <th scope="col">Details</th>
+                            <th scope="col">Timestamp</th>
+                            <th scope="col">IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs.items %}
+                        <tr>
+                            <th scope="row">{{ logs.per_page * (logs.page - 1) + loop.index }}</th>
+                            <td>#{{ log.id }}</td>
+                            <td>
+                                <i class="fas fa-user"></i> {{ log.user.username }}
+                                <br><small class="text-muted">{{ log.user.email }}</small>
+                            </td>
+                            <td>{{ log.action }}</td>
+                            <td><small class="text-muted">{{ log.details or 'N/A' }}</small></td>
+                            <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td><code>{{ log.ip_address }}</code></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <div class="text-center p-5">
+                    <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No Audit Logs Found</h5>
+                    <p class="text-muted">System activity will be recorded here.</p>
+                </div>
+            {% endif %}
+        </div>
+        {% if logs.pages > 1 %}
+        <div class="card-footer bg-light">
+            <nav aria-label="Audit logs pagination">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item {% if not logs.has_prev %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('audit_logs', page=logs.prev_num) }}">&laquo; Previous</a>
+                    </li>
+                    {% for page_num in logs.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if page_num %}
+                            <li class="page-item {% if page_num == logs.page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('audit_logs', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="page-item {% if not logs.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('audit_logs', page=logs.next_num) }}">Next &raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
