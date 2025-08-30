@@ -22,6 +22,11 @@
                                     {% if form.name.errors %}
                                         <div class="invalid-feedback">
                                             {% for error in form.name.errors %}
+                                    {{ form.username.label(class="form-label") }}
+                                    {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else "")) }}
+                                    {% if form.username.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.username.errors %}
                                                 {{ error }}
                                             {% endfor %}
                                         </div>

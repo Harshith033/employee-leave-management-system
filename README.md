@@ -63,6 +63,7 @@ python app.py
 
 The application will start on `http://localhost:5000`
 
+<<<<<<< HEAD
 ### 3. Default Login Credentials
 
 The system creates default users for testing:
@@ -72,6 +73,14 @@ The system creates default users for testing:
 | Admin | admin@elms.com | admin123 | Full system access |
 | Manager | manager@elms.com | manager123 | Team management |
 | Employee | employee@elms.com | employee123 | Basic employee access |
+### 3. User Registration
+
+The application uses a registration system. There are no default users.
+
+1.  Navigate to `http://127.0.0.1:5000/register`.
+2.  Create an **Admin** user first to manage the system.
+3.  You can then register **Manager** and **Employee** users.
+>>>>>>> 8c9a45a (Updated ELMS project with new features)
 
 ## 📱 User Interfaces
 
@@ -200,6 +209,10 @@ CMD ["python", "app.py"]
 
 ### Authentication
 - `GET /login` - Login page
+
+
+- `GET /register` - Registration page
+
 - `POST /login` - Process login
 - `GET /logout` - Logout user
 
@@ -221,7 +234,10 @@ CMD ["python", "app.py"]
 - `GET /admin/users` - User management
 - `GET /admin/add-user` - Add user form
 - `POST /admin/add-user` - Create new user
+
 - `GET /admin/delete-user/<id>` - Delete user
+- `GET /admin/deactivate-user/<id>` - Deactivate a user (soft delete)
+- `GET /admin/activate-user/<id>` - Activate a user
 - `GET /admin/audit-logs` - Audit log viewer
 
 ### Reporting Routes

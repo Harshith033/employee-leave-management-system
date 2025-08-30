@@ -12,11 +12,15 @@ from functools import wraps
 from io import BytesIO
 import secrets
 import re
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter, landscape
 
 # Initialize Flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secrets.token_hex(16)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///leaves.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///elms.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize extensions
@@ -551,14 +555,14 @@ def add_user():
     
     return render_template('admin/add_user.html', form=form)
 
-@app.route('/admin/delete-user/<int:user_id>')
+@app.route('/admin/deactivate-user/<int:user_id>')
 @login_required
 @role_required('admin')
-def delete_user(user_id):
+def deactivate_user(user_id):
     user = User.query.get_or_404(user_id)
     
     if user.id == current_user.id:
-        flash('You cannot delete your own account.', 'danger')
+        flash('You cannot deactivate your own account.', 'danger')
         return redirect(url_for('admin_users'))
     
     # Soft delete by deactivating
@@ -566,7 +570,24 @@ def delete_user(user_id):
     db.session.commit()
     
     log_action(f'Deactivated user: {user.username} ({user.role})')
-    flash(f'User {user.username} deactivated successfully!', 'info')
+    flash(f'User {user.username} has been deactivated.', 'info')
+    return redirect(url_for('admin_users'))
+
+@app.route('/admin/activate-user/<int:user_id>')
+@login_required
+@role_required('admin')
+def activate_user(user_id):
+    user = User.query.get_or_404(user_id)
+
+    if user.id == current_user.id:
+        flash('You cannot activate your own account.', 'danger')
+        return redirect(url_for('admin_users'))
+
+    user.is_active = True
+    db.session.commit()
+
+    log_action(f'Activated user: {user.username} ({user.role})')
+    flash(f'User {user.username} has been activated.', 'success')
     return redirect(url_for('admin_users'))
 
 @app.route('/admin/audit-logs')
@@ -709,6 +730,93 @@ def export_csv():
     response = make_response(output.getvalue())
     response.headers['Content-Type'] = 'text/csv'
     response.headers['Content-Disposition'] = 'attachment; filename=leave_requests.csv'
+    return response
+
+@app.route('/reports/export-pdf')
+@login_required
+@role_required('admin')
+def export_pdf():
+    """Exports all leave data to a PDF file."""
+    # Get filter parameters
+    month = request.args.get('month')
+    team = request.args.get('team')
+
+    try:
+        query = db.session.query(
+            User.username,
+            LeaveRequest.reason,
+            LeaveRequest.start_date,
+            LeaveRequest.end_date,
+            LeaveRequest.status
+        ).join(User, LeaveRequest.user_id == User.id)
+
+        # Apply filters
+        if month:
+            year, month_num = month.split('-')
+            query = query.filter(
+                db.extract('year', LeaveRequest.applied_on) == int(year),
+                db.extract('month', LeaveRequest.applied_on) == int(month_num)
+            )
+        
+        if team:
+            query = query.filter(User.team == team)
+
+        leave_requests = query.order_by(LeaveRequest.applied_on.desc()).all()
+    except Exception as e:
+        flash(f'Error fetching data for PDF export: {str(e)}', 'danger')
+        return redirect(url_for('admin_dashboard'))
+
+    buffer = BytesIO()
+    # Use landscape for wider tables
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter))
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Title
+    title = Paragraph("Employee Leave Report", styles['h1'])
+    elements.append(title)
+    elements.append(Spacer(1, 24))
+
+    # Table Data
+    # Header row
+    data = [
+        ["Employee Name", "Leave Type (Reason)", "Start Date", "End Date", "Status"]
+    ]
+    # Data rows
+    for req in leave_requests:
+        # Wrap long reason text in a Paragraph
+        reason_paragraph = Paragraph(req.reason, styles['Normal'])
+        data.append([
+            req.username,
+            reason_paragraph,
+            req.start_date.strftime('%Y-%m-%d'),
+            req.end_date.strftime('%Y-%m-%d'),
+            req.status.title()
+        ])
+
+    # Create Table and apply style
+    table = Table(data, colWidths=[120, 300, 90, 90, 80])
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.aliceblue),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ])
+    table.setStyle(style)
+    elements.append(table)
+
+    doc.build(elements)
+
+    buffer.seek(0)
+    log_action('Exported leave data to PDF')
+    
+    response = make_response(buffer.getvalue())
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=leave_report.pdf'
     return response
 
 # Initialize database and create tables
