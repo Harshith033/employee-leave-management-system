@@ -14,7 +14,6 @@ blinker==1.6.2
 # PDF & CSV Reporting
 reportlab==4.1.0
 pandas==2.1.4
-WeasyPrint==59.0
 
 # Environment variables
 python-dotenv==1.0.0
