@@ -11,11 +11,19 @@ A comprehensive, role-based Flask web application for managing employee leave re
 
 ### 🚀 Core Functionality
 - **Authentication**: Secure login/logout with Flask-Login
+<<<<<<< HEAD
+=======
+- **User Registration**: New users can register for an account.
+>>>>>>> 8c9a45a7b82aee61b2b72c07bc7e779960f0e3e0
 - **Leave Management**: Apply, edit, cancel, approve/reject leave requests
 - **Real-time Status**: Track leave request status (pending, approved, rejected)
 - **Audit Logging**: Complete activity tracking with IP addresses and timestamps
 - **Reporting**: Export data to CSV and PDF formats
 - **Responsive UI**: Bootstrap 5-based modern interface
+<<<<<<< HEAD
+=======
+- **Leave Balance**: Employees can see their remaining leave balance.
+>>>>>>> 8c9a45a7b82aee61b2b72c07bc7e779960f0e3e0
 
 ## 🛠️ Tech Stack
 
@@ -24,7 +32,11 @@ A comprehensive, role-based Flask web application for managing employee leave re
 - **Database**: SQLite (development) / PostgreSQL (production-ready)
 - **Authentication**: Flask-Login (session-based)
 - **Forms**: Flask-WTF with CSRF protection
+<<<<<<< HEAD
 - **Reporting**: pandas (CSV), WeasyPrint (PDF)
+=======
+- **Reporting**: pandas (CSV), reportlab (PDF)
+>>>>>>> 8c9a45a7b82aee61b2b72c07bc7e779960f0e3e0
 - **UI Framework**: Bootstrap 5 with custom styling
 
 ## 📋 Prerequisites
@@ -45,8 +57,15 @@ cd employee-Leave-MS
 python -m venv venv
 
 # Activate virtual environment
+<<<<<<< HEAD
 # On Windows:
 venv\Scripts\activate
+=======
+# On Windows (Command Prompt):
+venv\Scripts\activate.bat
+# On Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+>>>>>>> 8c9a45a7b82aee61b2b72c07bc7e779960f0e3e0
 # On macOS/Linux:
 source venv/bin/activate
 
@@ -64,6 +83,7 @@ python app.py
 The application will start on `http://localhost:5000`
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### 3. Default Login Credentials
 
 The system creates default users for testing:
@@ -73,6 +93,8 @@ The system creates default users for testing:
 | Admin | admin@elms.com | admin123 | Full system access |
 | Manager | manager@elms.com | manager123 | Team management |
 | Employee | employee@elms.com | employee123 | Basic employee access |
+=======
+>>>>>>> 8c9a45a7b82aee61b2b72c07bc7e779960f0e3e0
 ### 3. User Registration
 
 The application uses a registration system. There are no default users.
@@ -80,13 +102,20 @@ The application uses a registration system. There are no default users.
 1.  Navigate to `http://127.0.0.1:5000/register`.
 2.  Create an **Admin** user first to manage the system.
 3.  You can then register **Manager** and **Employee** users.
+<<<<<<< HEAD
 >>>>>>> 8c9a45a (Updated ELMS project with new features)
+=======
+>>>>>>> 8c9a45a7b82aee61b2b72c07bc7e779960f0e3e0
 
 ## 📱 User Interfaces
 
 ### Employee Dashboard
 - Apply for leave with date validation
+<<<<<<< HEAD
 - View leave request history
+=======
+- View leave request history and remaining leave balance
+>>>>>>> 8c9a45a7b82aee61b2b72c07bc7e779960f0e3e0
 - Edit/cancel pending requests
 - Real-time status updates
 
@@ -209,10 +238,14 @@ CMD ["python", "app.py"]
 
 ### Authentication
 - `GET /login` - Login page
+<<<<<<< HEAD
 
 
 - `GET /register` - Registration page
 
+=======
+- `GET /register` - Registration page
+>>>>>>> 8c9a45a7b82aee61b2b72c07bc7e779960f0e3e0
 - `POST /login` - Process login
 - `GET /logout` - Logout user
 
@@ -234,8 +267,11 @@ CMD ["python", "app.py"]
 - `GET /admin/users` - User management
 - `GET /admin/add-user` - Add user form
 - `POST /admin/add-user` - Create new user
+<<<<<<< HEAD
 
 - `GET /admin/delete-user/<id>` - Delete user
+=======
+>>>>>>> 8c9a45a7b82aee61b2b72c07bc7e779960f0e3e0
 - `GET /admin/deactivate-user/<id>` - Deactivate a user (soft delete)
 - `GET /admin/activate-user/<id>` - Activate a user
 - `GET /admin/audit-logs` - Audit log viewer

@@ -158,7 +158,7 @@
             {% for request in requests %}
             <tr>
                 <td>#{{ request.id }}</td>
-                <td>{{ request.employee_name }}</td>
+                <td>{{ request.user.username }}</td>
                 <td>{{ request.team or 'No Team' }}</td>
                 <td>{{ request.start_date.strftime('%Y-%m-%d') }}</td>
                 <td>{{ request.end_date.strftime('%Y-%m-%d') }}</td>

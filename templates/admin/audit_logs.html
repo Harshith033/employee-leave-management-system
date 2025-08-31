@@ -128,7 +128,7 @@
             <div class="card text-center border-info">
                 <div class="card-body">
                     <i class="bi bi-box-arrow-in-right text-info" style="font-size: 2rem;"></i>
-                    <h4 class="mt-2">{{ logs.items|selectattr('action', 'match', '.*logged in.*')|list|length }}</h4>
+                    <h4 class="mt-2">{{ log_stats.login_activities | default('N/A') }}</h4>
                     <p class="text-muted">Login Activities</p>
                 </div>
             </div>
@@ -137,7 +137,7 @@
             <div class="card text-center border-warning">
                 <div class="card-body">
                     <i class="bi bi-calendar-plus text-warning" style="font-size: 2rem;"></i>
-                    <h4 class="mt-2">{{ logs.items|selectattr('action', 'match', '.*leave.*')|list|length }}</h4>
+                    <h4 class="mt-2">{{ log_stats.leave_activities | default('N/A') }}</h4>
                     <p class="text-muted">Leave Activities</p>
                 </div>
             </div>
@@ -146,7 +146,7 @@
             <div class="card text-center border-success">
                 <div class="card-body">
                     <i class="bi bi-person-plus text-success" style="font-size: 2rem;"></i>
-                    <h4 class="mt-2">{{ logs.items|selectattr('action', 'match', '.*user.*')|list|length }}</h4>
+                    <h4 class="mt-2">{{ log_stats.user_management | default('N/A') }}</h4>
                     <p class="text-muted">User Management</p>
                 </div>
             </div>
@@ -155,7 +155,7 @@
             <div class="card text-center border-primary">
                 <div class="card-body">
                     <i class="bi bi-download text-primary" style="font-size: 2rem;"></i>
-                    <h4 class="mt-2">{{ logs.items|selectattr('action', 'match', '.*Export.*')|list|length }}</h4>
+                    <h4 class="mt-2">{{ log_stats.export_activities | default('N/A') }}</h4>
                     <p class="text-muted">Export Activities</p>
                 </div>
             </div>

@@ -28,7 +28,7 @@ def check_app_running():
 def view_database_after_test():
     """View database contents after testing"""
     try:
-        conn = sqlite3.connect('leaves.db')
+        conn = sqlite3.connect('elms-dev.db')
         
         print("\n" + "="*60)
         print("📊 DATABASE CONTENTS AFTER TESTING")
@@ -84,8 +84,8 @@ def view_database_after_test():
         
         # Database file info
         import os
-        if os.path.exists('leaves.db'):
-            size = os.path.getsize('leaves.db')
+        if os.path.exists('elms-dev.db'):
+            size = os.path.getsize('elms-dev.db')
             print(f"\n💾 Database file size: {size:,} bytes")
         
     except Exception as e:
@@ -163,7 +163,7 @@ def main():
     
     print("\n🛠️  ADDITIONAL VERIFICATION OPTIONS:")
     print("   1. Run: python view_database.py")
-    print("   2. Use DB Browser for SQLite: sqlitebrowser leaves.db")
+    print("   2. Use DB Browser for SQLite: sqlitebrowser elms-dev.db")
     print("   3. SQLite CLI: sqlite3 leaves.db")
     
     print("\n🎯 EDGE CASE TESTING:")

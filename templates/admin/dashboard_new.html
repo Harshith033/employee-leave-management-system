@@ -189,9 +189,6 @@
         <a href="{{ url_for('audit_logs') }}" class="quick-action-btn">
             <i class="fas fa-history"></i><br>Audit Logs
         </a>
-        <a href="{{ url_for('export_csv') }}" class="quick-action-btn">
-            <i class="fas fa-download"></i><br>Export Data
-        </a>
     </div>
 
     <!-- Statistics Grid -->
@@ -266,17 +263,10 @@
     <!-- Export Section -->
     <div class="export-section">
         <h4><i class="fas fa-download"></i> Export Leave Data</h4>
-<<<<<<< HEAD
-        <p>Download leave request data in CSV format with optional filters</p>
-        
-        <div class="export-form">
-            <form action="{{ url_for('export_csv') }}" method="GET" class="row g-3">
-=======
         <p>Download leave request data in CSV or PDF format with optional filters.</p>
         
         <div class="export-form">
             <form method="GET" class="row g-3 align-items-end">
->>>>>>> 8c9a45a (Updated ELMS project with new features)
                 <div class="col-md-4">
                     <label for="month" class="form-label">Month Filter</label>
                     <input type="month" name="month" id="month" class="form-control" 
@@ -291,14 +281,6 @@
                         {% endfor %}
                     </select>
                 </div>
-<<<<<<< HEAD
-                <div class="col-md-4">
-                    <label class="form-label">&nbsp;</label>
-                    <button type="submit" class="btn btn-light w-100">
-                        <i class="fas fa-file-csv"></i> Export to CSV
-                    </button>
-                </div>
-=======
                 <div class="col-md-2">
                     <button type="submit" formaction="{{ url_for('export_csv') }}" class="btn btn-success w-100">
                         <i class="fas fa-file-csv"></i> Export to CSV
@@ -309,7 +291,6 @@
                         <i class="fas fa-file-pdf"></i> Export to PDF
                     </button>
                 </div>
->>>>>>> 8c9a45a (Updated ELMS project with new features)
             </form>
         </div>
     </div>
