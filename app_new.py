@@ -16,12 +16,15 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape
+from config import config
 
 # Initialize Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = secrets.token_hex(16)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///elms.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Load configuration from config.py based on environment variable
+config_name = os.getenv('FLASK_CONFIG') or 'default'
+app.config.from_object(config[config_name])
+config[config_name].init_app(app)
 
 # Initialize extensions
 db = SQLAlchemy(app)
@@ -819,16 +822,13 @@ def export_pdf():
     response.headers['Content-Disposition'] = 'attachment; filename=leave_report.pdf'
     return response
 
-# Initialize database and create tables
-def init_db():
-    with app.app_context():
-        db.create_all()
-        print("✅ Database tables created successfully!")
+# Initialize database and create tables on startup
+with app.app_context():
+    db.create_all()
 
 if __name__ == '__main__':
-    init_db()
-    print("🚀 Employee Leave Management System starting...")
+    print(f"🚀 Employee Leave Management System starting in '{config_name}' mode...")
     print("📊 You can view the SQLite database using DB Browser for SQLite")
-    print("💾 Database file: leaves.db")
+    print(f"💾 Database file: {app.config['SQLALCHEMY_DATABASE_URI'].split('///')[-1]}")
     print("🌐 Access the application at: http://127.0.0.1:5000")
     app.run(debug=True, host='127.0.0.1', port=5000)
